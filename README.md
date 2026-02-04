@@ -101,17 +101,27 @@ For this implementation, we selected 6 clinically relevant numerical features:
 
 ```
 logistic-regression/
+├── README.md                          # This file
+├── AWS_SAGEMAKER_GUIDE.md             # Step-by-step SageMaker deployment guide
+├── heart_disease_lr_analysis.ipynb    # Main analysis notebook (Steps 1-5)
+├── heart_disease_model.npy            # Exported trained model
+├── model.tar.gz                       # Packaged model for SageMaker
 ├── class-notebooks/
-Main notebook
-│   │   ├── README.md                               # ← This file
-│   │   └── heart_disease_model.npy                 # Exported model
+│   ├── homework.md                    # Homework requirements
+│   ├── action-plan.md                 # Action plan
 │   ├── week2_classification_hour1_final.ipynb
-│   ├── week2_classification_hour2_regularization.ipynb
-│   └── homework.md
+│   ├── week2_classification_hour2_regularization_with_derivatives.ipynb
+│   └── APENDIX-RidgeVsGradientDescentInRegularizedLinearRegression.ipynb
 ├── dataset/
-│   └── Heart_Disease_Prediction.csv
-├── heart_disease_lr_analysis.ipynb
-└── README.md
+│   └── Heart_Disease_Prediction.csv   # Source dataset (270 patients)
+├── imgs/
+│   ├── first.png                      # Code Editor creation screenshot
+│   ├── second.png                     # File upload screenshot
+│   ├── third.png                      # Domain public network screenshot
+│   └── fourth.png                     # Deployment output screenshot
+└── sagemaker_scripts/
+    ├── inference.py                   # SageMaker inference handler
+    └── demo_deployment.py             # Deployment demo script
 ```
 
 ---
