@@ -317,15 +317,42 @@ Created `inference.py` with functions for:
 
 ## 🖼️ Deployment Evidence
 
+### Step 5: AWS SageMaker Deployment
+
+**Model Endpoint Information:**
+- **Model location:** S3 bucket (ml-bootcamp-models-2024) or SageMaker workspace
+- **Tested input:** `[Age=60, BP=140, Chol=300, MaxHR=150, ST_depression=2.5, Vessels=2]`
+- **Output:** `Probability=81.02% (HIGH RISK - Heart Disease Likely)`
+
+> **Deployment Comment:** *"Deployment enables real-time heart disease risk scoring for clinical decision support. With SageMaker, clinicians can integrate this model into hospital EHR systems to provide instant predictions. Typical latency is 10-50ms for single patient predictions, making it suitable for point-of-care applications."*
+
+### Screenshots (See AWS_SAGEMAKER_GUIDE.md)
+
+| Screenshot | Description |
+|------------|-------------|
+| SageMaker Studio | Code Editor workspace with project files |
+| S3 Model Upload | model.tar.gz uploaded to S3 bucket |
+| Inference Test | Sample prediction output in notebook |
+
+### Model Export Artifacts
+
+```
+sagemaker_scripts/
+├── inference.py         # SageMaker inference handler
+└── demo_deployment.py   # SageMaker deployment script
+```
+
+> ⚠️ **Important:** The SageMaker Domain must be configured with **"Public internet only"** network access. VPC-only domains will fail with connection timeouts. See [AWS_SAGEMAKER_GUIDE.md](AWS_SAGEMAKER_GUIDE.md) for details.
+
 ### Training & Model Development
 
-The complete training process is documented in `heart_disease_complete_solution.ipynb`:
+The complete training process is documented in `heart_disease_lr_analysis.ipynb`:
 
-1. **Data Loading & EDA** - Cells 1-12
-2. **Model Training** - Cells 13-22
-3. **Visualization** - Cells 23-28
-4. **Regularization Tuning** - Cells 29-36
-5. **Deployment Preparation** - Cells 37-44
+1. **Data Loading & EDA** - Steps 1.1-1.6
+2. **Model Training** - Steps 2.1-2.6
+3. **Visualization** - Steps 3.1-3.3
+4. **Regularization Tuning** - Steps 4.1-4.5
+5. **Deployment** - Steps 5.1-5.5
 
 ### SageMaker Deployment Workflow
 
