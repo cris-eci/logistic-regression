@@ -319,20 +319,62 @@ Created `inference.py` with functions for:
 
 ### Step 5: AWS SageMaker Deployment
 
-**Model Endpoint Information:**
-- **Model location:** S3 bucket (ml-bootcamp-models-2024) or SageMaker workspace
-- **Tested input:** `[Age=60, BP=140, Chol=300, MaxHR=150, ST_depression=2.5, Vessels=2]`
-- **Output:** `Probability=81.02% (HIGH RISK - Heart Disease Likely)`
+**Deployment Summary:**
 
-> **Deployment Comment:** *"Deployment enables real-time heart disease risk scoring for clinical decision support. With SageMaker, clinicians can integrate this model into hospital EHR systems to provide instant predictions. Typical latency is 10-50ms for single patient predictions, making it suitable for point-of-care applications."*
+| Component | Status | Details |
+|-----------|--------|---------|
+| SageMaker Session | ✅ | Region: `us-east-1` |
+| Model Upload to S3 | ✅ | `s3://sagemaker-us-east-1-106401275988/heart-disease-model/model.tar.gz` |
+| SageMaker Model Object | ✅ | Framework: scikit-learn 1.2-1 |
+| Inference Script | ✅ | `inference.py` ready |
+| Endpoint Deployment | ❌ | Blocked by Learner Lab IAM policy |
+| Local Inference Test | ✅ | All test cases passed |
 
-### Screenshots (See AWS_SAGEMAKER_GUIDE.md)
+> **Note:** AWS Academy Learner Lab restricts `sagemaker:CreateEndpointConfig`, preventing real endpoint deployment. The deployment script successfully uploads the model and tests inference locally as a fallback.
 
-| Screenshot | Description |
-|------------|-------------|
-| SageMaker Studio | Code Editor workspace with project files |
-| S3 Model Upload | model.tar.gz uploaded to S3 bucket |
-| Inference Test | Sample prediction output in notebook |
+### Screenshots
+
+#### 1. Creating the Code Editor Space
+Creating the **logistic-regression** Code Editor space in SageMaker Studio.
+
+![Creating Code Editor Space](imgs/first.png)
+
+#### 2. Uploading Project Files
+Dragging project files into the Code Editor: `sagemaker_scripts/`, `heart_disease_model.npy`, and `model.tar.gz`.
+
+![Uploading Files](imgs/second.png)
+
+#### 3. Configuring Public Network Access
+Changing the SageMaker Domain from VPC-only to **"Public internet only"** — this step is critical for proper connectivity.
+
+![Domain Public Network](imgs/third.png)
+
+#### 4. Running the Deployment Script
+Executing `demo_deployment.py` which successfully uploads the model to S3. The endpoint deployment is blocked by AWS Academy Learner Lab IAM restrictions (`sagemaker:CreateEndpointConfig` denied), so the script falls back to local inference testing.
+
+![Deployment Output](imgs/fourth.png)
+
+### Deployment Output
+
+```
+📦 Step 1: Initializing SageMaker session...
+   ✅ Region: us-east-1
+   ✅ Bucket: sagemaker-us-east-1-106401275988
+
+📤 Step 2: Uploading model.tar.gz to S3...
+   ✅ S3 Path: s3://sagemaker-us-east-1-106401275988/heart-disease-model/model.tar.gz
+
+🔧 Step 3: Creating SageMaker Model object...
+   ✅ Model object created successfully
+
+🌐 Step 4: Deploying endpoint...
+   ❌ Blocked by Learner Lab IAM policy (CreateEndpointConfig denied)
+
+🧪 Step 5: Local inference test results:
+   • High-Risk Patient [65, 160, 320, 120, 2.5, 2] → 89.32% (Heart Disease ⚠️)
+   • Low-Risk Patient [35, 120, 180, 175, 0, 0] → 16.29% (No Heart Disease ✅)
+   • Medium-Risk Patient [55, 140, 250, 150, 1.0, 1] → 53.28% (Heart Disease ⚠️)
+```
 
 ### Model Export Artifacts
 
@@ -342,58 +384,7 @@ sagemaker_scripts/
 └── demo_deployment.py   # SageMaker deployment script
 ```
 
-> ⚠️ **Important:** The SageMaker Domain must be configured with **"Public internet only"** network access. VPC-only domains will fail with connection timeouts. See [AWS_SAGEMAKER_GUIDE.md](AWS_SAGEMAKER_GUIDE.md) for details.
-
-### Training & Model Development
-
-The complete training process is documented in `heart_disease_lr_analysis.ipynb`:
-
-1. **Data Loading & EDA** - Steps 1.1-1.6
-2. **Model Training** - Steps 2.1-2.6
-3. **Visualization** - Steps 3.1-3.3
-4. **Regularization Tuning** - Steps 4.1-4.5
-5. **Deployment** - Steps 5.1-5.5
-
-### SageMaker Deployment Workflow
-
-```
-┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐
-│  1. Export      │────▶│  2. Upload to   │────▶│  3. Create      │
-│     Model       │     │     S3          │     │     Endpoint    │
-└─────────────────┘     └─────────────────┘     └─────────────────┘
-                                                        │
-┌─────────────────┐     ┌─────────────────┐             ▼
-│  5. Get Risk    │◀────│  4. Send        │◀────────────┘
-│     Score       │     │     Request     │
-└─────────────────┘     └─────────────────┘
-```
-
-### Sample Inference Request/Response
-
-**Request:**
-```json
-{
-  "features": [60, 140, 300, 150, 2.5, 2]
-}
-```
-
-**Response:**
-```json
-{
-  "probability": 0.68,
-  "prediction": 1,
-  "risk_level": "HIGH",
-  "diagnosis": "Heart Disease Likely"
-}
-```
-
-### Expected Performance
-
-| Metric | Value |
-|--------|-------|
-| Latency | ~50-100ms |
-| Throughput | ~100 req/sec |
-| Instance Cost | ~$0.05/hour (ml.t2.medium) |
+> ⚠️ **Critical:** The SageMaker Domain must be configured with **"Public internet only"** network access. VPC-only domains will fail with connection timeouts. See [AWS_SAGEMAKER_GUIDE.md](AWS_SAGEMAKER_GUIDE.md) for details.
 
 ---
 
